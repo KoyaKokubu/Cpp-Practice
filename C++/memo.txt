@@ -1,0 +1,737 @@
+<C++>
+#include <iostream>
+using namespace std;
+<C>
+#include <stdio.h>
+
+-> stream allows us to code in almost the same way to input/output from console, files or so on.
+-> easy to code input from keyboard
+
+<C++> endl = <C> \n
+
+(名前空間名)::(variable・method・class・etc.）
+ex) std::cout , std::endl
+
+<C++>
+cin / cout
+<C> scanf() / printf()
+
+<C++>
+cout << "a=" << a << endl;
+<C>
+printf("a=%s\n", a)
+
+<C++>#include <string> != <C>#include <string.h>
+
+<C++>
+string s;
+s="";
+cin >> s
+<C>
+char str1[16];
+char str2[16];
+scanf("%s %s", str1, str2);
+int a;
+scanf("%d", &a); // when integer input, require "&"
+
+<C++>
++: concate 2 strings
++=: add straing
+==: same string
+!=: different string
+<,>: compare length of strings
+
+<C>
+static: initialize the variat only for the first time for the function to be called. This variable cannot be accessed from other files with extern. (encapsulation)
+extern: use the variable which is used in another file.
+#include <stdio.h> : stdio.h is library. <> can be used for files which is not instantiated by .c file
+#include "calc.h" : calc.c instantiates the func stated in calc.h.
+
+#ifndef _ABC_H_ : prevent from double-include which means that the same func is stated several times by being called by several files
+#define _ABC_H_
+---
+#endif // _ABC_H
+
+<C compiler>
+1. preprosessor: prepare to compile. (ex. identify #include/define)
+2. compiler: make objective files
+3. linker: link objective files and create a exe file
+-> the whole sequence is called "build"
+
+<C>
+time(): the total seconds which has passed since 00:00:00 1/1/1970
+srand(unsigned ---): intitialize the seed for random function
+rand(): produce random number between 0-RAND_MAX
+rand()%n+1: produce random number between 1-n (%n -> 0-n-1) (%n+1 -> 1-n)
+rand()%(n+1): produce random number between 0-n
+
+<C compile command>
+gcc -o -- --.c -lm : when you include math.h, it requires the library "limb". "-lm" links it.
+
+<C pointer>
+There are two types of variables in C.
+One is to obtain the value. The other is to obtain the address.
+Pointer is the variable to obtain the address.
+*p == a : by using "*", we can get the value of the variable whose address is p.
+p == &a : usually, we use "&" to specify the address of a variable but p doesn't need "&" because iselft indicates address.
+
+- It's better to match the type of the variables
+int a -> int* p
+double d -> double* pd
+
+- we can reflect the changes (of values) without returning the results when we utilize pointer in the function.
+- we cannot input values to *p before giving an address
+
+- We need to state multiple pointer vatiants in this way. 
+double *p1=NULL, *p2=NULL;
+- the following way does not work
+double* p1=NULL, p2=NULL;
+
+- array variable can be considered as a type of pointer.
+d[]->*d  ( d[0]=*d, d[1]=*(d+1) )
+- but, d cannot get an address of another variable.
+
+* the reason the way to state "scanf" differs between int/double and char
+scanf("%d", &n); -> &n indicates the address of variable "n"
+scanf("%s", s); -> s indicates the address of array "s" or "s[0]"
+-->> string is an array of char, so it does not require "&"
+
+* malloc : dynamically allocate memory (when using pointer like array)
+#include <stdlib.h>
+int* p1=(int*)malloc(sizeof(int)*ELEMENT_SIZE);
+double* p1=(double*)malloc(sizeof(double)*ELEMENT_SIZE);
+- we need to free up the memories
+free(p);
+
+* we need to give address for the pointer variable as an argument of function.
+  It meay be obvious because we can initialize a pointer variable in the same way
+
+* 4 types of memory areas
+- program area: area for machine language
+- static area: area for global/static variables -> so, static variables work like global variables
+- heap area: area for dynamic memory
+- stack area: area for local variables
+
+* you should also refer to "pointer_of_pointe.c" and "pointer_func.c"
+- it seems impposible to use pointer of pointer of function due to the type difference.
+  if we can figure out the type of the pointer of function, it may be possible.
+
+<C>
+#define ABC --- : create a constant "ABC"
+
+strcpy(): copy string
+strcat(): concate string
+strlen(): length of string
+strcmp(s1, s2): compare strings / if same -> 0 , else -> not 0
+
+atoi(): string to integer
+atof(): string to double
+
+sprintf(s, "---"): insert "---" to s
+sprintf(s, "%d", a): insert a to s
+puts(s): printf("%s\n",s)
+
+* struct (=structure)
+struct --- {
+  int ~;
+};
+struct --- x;
+x.~ = 1;
+
+typedef struct --- XXX;
+*** x;
+s.id = 1;
+
+- it can be the following
+typedef struct {
+  int ~;
+}XXX;
+
+* struct pointer
+XXX* pData;
+pData->id = 1; (not pData.id = 1)
+- "->" is called "arrow operator"
+
+* why using pointer address for struct argument of function
+the data size of struct tends to become large.
+When we do not use pointer argument, it allocate new memories for the struct data.
+On the other hand, using pointer argument does not require allocating new memories.
+Furthermore, using pointer argument allows us to change the data of an original variable.
+
+- when you manipulate files, you need to use pointer variable
+File* fp;
+fp = fopen("---.txt", "w");
+- "w" : write
+- "r" : read
+- "a" : add
+- "w+" : write and read (if not null: delete and create new)
+- "r+" : read and write (if not null: just read first)
+- "a+" : read and add
+- "wb" : write binary
+- "rb" : read binary
+- "ab" : add binary
+- "wb+ / w+b" : write and read binary
+- "rb+ / w+b" : read and write binary
+- "ab+ / a+b" : read and add binary
+
+- fprintf(*fp): write in a flie. 
+             if os is windows: "enter"="\r\n", if linux: "enter"="\n"
+- fclose(*fp): close a file.
+
+- get strings with size of SIZE from file
+- do it until we get NULL(the end of file)
+while (fgets(line, SIZE, file) != NULL) {
+    printf("%s", line);
+}
+
+- another way to get strings (one by one character)
+- note the difference! "fgets" and "fgetc"
+while ((c=fgetc(file)) != EOF) {
+    printf("%c", (char)c);
+}
+
+* difference between NULL and EOF
+- NULL: null pointer. this indicates 0 of pointer. including "\0" called "null character"
+- EOF: end of file
+-> NULL indicates the end of strings, error while EOF indicates just the end of file.
+   fgets read strings, so cannot read EOF but read null
+
+- binary data manipulation
+  char wdata[] = {0x10, 0x1a, 0x1e, 0x1f};
+  char rdata[4];
+  file = fopen("./files/test.bin", "wb");
+  fwrite(wdata, sizeof(char), sizeof(wdata), file);
+  file = fopen("./files/test.bin", "rb");
+  fread(rdata, sizeof(char), sizeof(rdata), file);
+- fwrite(wdata, data bytes, data length, fp);
+- fread(rdata, data bytes, data length, fp);
+
+* when we try to read a file which has unknown size of data
+- fseek(fp, bytes to move, start_point): move file pointer
+  ex) fseek(fp, 0, SEEK_END) : move pointer to the end of the file.
+- ftell(fp): tell how far from [0]
+  ex) fseek(fp, 0, SEEK_END) -> ftell(fp) : tell the size of the file.
+SIZE_SET: beginning of a file
+SIZE_CUR: current position
+SEEK_END: end of the file
+-->> Therfore, we can read file in the following way
+    fseek(file, 0, SEEK_END);
+    size = ftell(file);
+    rdata = (char*)malloc(sizeof(char)*size);
+    fseek(file, 0, SEEK_SET);
+    fread(rdata, sizeof(char), size, file);
+    fclose(file);
+
+<C>
+enum : data type which indicates data which has rule or order.
+ex) enum GENDER {
+      MALE,
+      FEMALE
+    };
+-> MALE=0, FEMALE=1 (enumerate)
+ex) enum COLOR {
+      RED=1,
+      BLUE=2,
+      GREEN=3
+    }
+
+-> enum is often used with switch().
+
+* header file
+- #include <.h>
+- #define
+- enum {};
+- typedef struct {};
+- function protoptype
+
+* source file
+- #include <.h>
+- #define
+- enum {};
+- function protoptype
+- typedef struct {};
+- global variables (non-static)
+- global variables (static)
+- func(){}
+
+
+* Compile multiple files
+g++ -c ~~.cpp **.cpp
+g++ ~~.o **.o -o ---
+
+<C++>
+* class
+- file.h
+  class File{
+    public:
+      void --(int ~~);
+    private:
+      int m_num; 
+  }
+- file.cpp
+  void File::--(int ~~){
+    m_num = ~~;
+  }
+
+* private vs public
+public: can be accessed from outside of the class
+private: cannot be accessed from outside of the class but can be accessed from methods in the class
+         -> encapsulation
+         -> if we wanna get the variables, we need to make method to access
+
+<C++>
+* string
+- s.append("") : s+""
+- s.length() : length of s
+- s.c_str() : c++ string -> c string
+
+* Constructor / Destructor
+- Constructor: initialize object
+- Destructor: destroy object. Generally, open memories / close files / etc.
+
+- .h
+class --- {
+  private:
+    ~~~;
+    ***;
+  public:
+    ---();
+    ~---();
+}
+
+- .cpp
+// Constructor
+---::---() : ~~~(?), ***(?) {
+    cout << "initialize --- object" << endl;
+}
+-> ~~~(?), ***(?) : initialize the member variables with ?
+-> (ex)
+    CCar::CCar() : m_fuel(0), m_migration(0) {
+        cout << "initialize CCar object" << endl;
+    }
+
+// Destructor
+---::~---() {
+    cout << "destroy --- object" << endl;
+}
+
+
+<C++>
+- new / delete
+-- instance --
+???* p = 0;
+p = new "name_of_constructor"()
+delete p
+-- variable --
+int *p = 0 or NULL
+p = new int();
+delete p;
+-- array --
+int *parray = NULL or 0;
+parray = new int[10];
+delete [] parray;
+
+* In C++, usually do not use "malloc" and "free" because they cannot call Constructor.
+  Also, they are not used even in terms of array, int and so on.
+  Instead of them, we can use "new" and "delete" to allocate and free up memory.
+  We cannot use delete for something created with "malloc" 
+
+- static member / instance member
+static member: be able to use class members without creating instances. There is only one static member per class. It can count instances.
+instance member: need to create instances to use class members. Multiple same member variables can be used among instances.
+(ex)
+- .h
+static void showNum();
+static int m_count;
+- .cpp
+int CRat::m_count = 0;
+CRat::showNum();
+
+* static member function can use only static member vaiables.
+  They cannot use normal member variables and functions becaue normal members require to create an instance.
+  On the other hand, normal member variables and functions can get access to static class members.
+
+<C++>
+* inheritance
+- .h
+class subclass : public parentclass{};
+
+- constructor: super.constructor -> sub.constructor
+- destructor: sub.destructor -> super.destructor
+                 /* note: you need to write "virtual" before destructor. Please refer to the detailed explanation about "virtual" below.
+
+* protected member
+it can be accessed by superclass and subclass but cannot be accesed by others.
+
+* multiple inheritance: inherit from more than one parent class.
+(ex)
+class subclass : public parentclass1, public parentclass2{};
+
+* Polymorphism
+Enabls to integrate a name, so that we don't need to remember many names.
+We don't need to give different names for functions which have a similar but slightly different operation.
+** overloading
+If both parameters and return values are different between function, they can have the same name.
+Constructor without any parameters is called "default constructor".
+Default constructor can be abreviated only if there is no other constructor.
+If you define constructor with a parameter, you need to define default constructor when you also need the default constructor.
+** override
+superclass and subclass can have a member function which has the same name.
+Their operation can be different.
+(ex)
+void Sup1::func(){
+    cout << "Sup1" << endl;
+}
+void Sub1::func(){
+    cout << "Sub1" << endl;
+}
+-> function operations are individual.
+
+<C>
+* int main(int argc, char** argv) {}
+- argc (argument count): the number of arguments
+- argv (argument vector): arguments
+(ex)
+command: ./a Hello World!
+int main(int argc, char** argv) {
+  for (int i=0; i<argc; i++) {
+    std::count << "arg[" << i << "]: " << argv[i] << std::endl;
+  }
+}
+result:
+argv[0]: ./a
+argv[1]: Hello
+argv[2]: World!
+
+* parameter / argument
+parameter: func(para1, para2) {}
+argument: func(arg1, arg2);
+
+
+<Difference between C and C++>
+* call by reference
+  C can call by value and pointer. C++ can call by reference in addition to them.
+  
+  (ex)
+  - call by pointer
+  void funcp(int* a){*a=1}
+  funcp(&b); or funcp(c);  ((b: int, c: pointer))
+  - call by reference
+  void funcr(int& n){n=1}
+  funcr(b); or funcp(*c);  ((b: int, c:pointer))
+  
+  -->> n=*a
+
+* local variables
+  In C, we need to define variables at the beginning of a code.
+  Inc C++, we can define everywhere.
+  (ex)
+  for (int i=0; i<10; i++) {}
+
+* struct
+  (ex) in C
+  typedef struct {
+    int n;
+  }data;
+
+  (ex) in C++
+  struct data {
+    int n;
+  };
+
+* boolean data type
+  In C, we cannot use boolean data type, but in C++, we can use.
+  (ex)
+  bool judge(int n) {
+    if (n>=0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+<C++ advanced>
+* class reference each other
+- %%%.h
+class ***;
+- ***.h
+class %%%;
+
+* this pointer
+- B.cpp
+B::B(A* pA);
+- A.cpp
+m_pB = new B(this);
+
+* const
+-->> ensure not to be changed
+-->> easier for compiler to optimize -> speed up
+-->> improve memory management
+(ex) (variable)
+const int max = 120;
+max = 130; -->> error
+(ex) (parameter of member function)
+void foo (const A* pA);
+void bar (const A& pA);
+-->> members in the instance pA of class A will not be changed.
+     If changed, it causes error.
+(ex) (member function)
+- .h
+int getNum() const;
+-->> this member function will not change values of the member variables
+
+<C++ advanced>
+* generic programming
+Generics is the idea to allow type (Integer, String, … etc and user-defined types) to be a parameter to methods, classes and interfaces. 
+For example, classes like an array, map, etc, which can be used using generics very efficiently. We can use them for any type.
+The method of Generic Programming is implemented to increase the efficiency of the code. 
+Generic Programming enables the programmer to write a general algorithm which will work with all data types. 
+It eliminates the need to create different algorithms if the data type is an integer, string or a character.
+The advantages of Generic Programming are
+- Code Reusability
+- Avoid Function Overloading
+- Once written it can be used for multiple times and cases.
+
+* template
+- enables generic programming
+- types: template function / template class
+
+--- template function
+T indicates all data types.
+(ex)
+  template <typename T>
+  T add(T x, T y) {
+    return x+y;
+  }
+
+  main() {
+    add<int>(4,3);
+    add<string>("ABC","DEF);
+    add(1,2) -> OK because they are obviously int
+    add("abc", "cde"); -> NG because they can be string or char*
+    add(1, 2.3); -> NG because their data types are different
+  }
+
+-->> it's better to specify the datatype or class by using <>
+
+
+--- template class
+When you write a template class, it's better to code in a header file(.h) because it's efficient.
+
+
+--- when you wanna use multiple datatypes
+template<typename T, typename S, ...>
+void add<int, double, ...>{};
+add<int, double, ...>(1, 2.3, ...);
+
+-->> when you use template, the program size gets large. so use them as few as possible. 
+
+* inline
+-->> speed up
+-- normal function: require to be called when you wanna call.
+-- inline function: not require to be called as if the operation is written in a same function.
+                    this indicates that the size of one program can be too large.
+                    written in a header file(.h) in the same way as template.
+                    also, it's better to use with const to improve performance.
+-> when should we use inline function?
+-->> if you use the same function which is coded with a few lines and frequently called.
+
+
+* STL: Starndard Template library
+- the biggest benefit of template
+- the C++ libraries which use template
+(ex)
+vector: dynamic array
+list: bidirectional list
+map: hash table / associative array
+set: set
+stack: stack
+queue: queue
+
+
+- vector
+#include <vector>
+using namespace std; // STL requires to state this.
+
+vector<int> v;
+
+v.push_back(): add
+v.clear(): clear
+v.size(): size
+v.capacity(): max_elements
+v.empty(): if empty or not
+v.erase(): it's inefficient compared to list because it stores indexes.
+v[i]: i-th element
+
+
+- list: enables to insert anywhere in a list b/c it doesn't have indexes. (bidirectional list)
+#include <list>
+using namespace std;
+list<int> li;
+
+li.push_back(2);
+li.push_front(3);
+
+list<int>::iterator itr;
+itr = li.begin();
+itr++;
+li.insert(itr, 4);
+for (itr=li.begin(); itr!=li.end(); itr++) {
+    cout << *itr << " ";
+}
+
+
+li.push_front(?): add front
+li.push_back(?): add back
+li.pop_front(): delete front. this is void function. you cannot get the front. no arguments required.
+li.pop_back(): delete back
+li.insert(itr, ?): insert anywhere
+li.erase(itr): delete elements by position
+li.remove(*itr): delete elements by value
+li.clear(): delete all
+
+
+-->> iterator: pointer to access an element in a list
+               vector is also able to use iterator.
+
+-- difference between vector and list
+list can delete an element by "remove".
+
+
+- map: work like a dictionary. (= hash table / associative array)
+map<string, int> score;
+string names[] = {"Tom", "Jasmine"};
+score[names[0]] = 100;
+score[names[1]] = 120;
+
+-->> key: string / value: int
+
+map<string, int>::iterator itr;
+for (itr=score.begin(); itr!=score.end(); itr++) {
+    cout << itr->first << " : " << itr->second << endl << endl;
+}
+
+((m=score in example above))
+m.clear(): delete all elements
+m.empty(): if empty or not -> if empty -> 1, if not -> 0
+m.find(): return iterator which matches the key. if not exist, return m.end().
+m.erase(itr): erase the element pointed by iterator (delete by position)
+m.size(): size of map
+(ex)
+itr = score.find("Tom");
+score.erase(itr);
+
+
+- set: In set, elements are in alphabet order.
+(ex)
+names.insert("A");
+names.insert("Tom");
+names.insert("Jasmine");
+names.insert("Jasmine");
+->>
+A
+Jasmine
+Tom
+
+s.clear()
+s.empty()
+s.erase()
+s.size()
+
+
+- stack: LIFO (Last In First Out)
+stack.push(?): add
+stack.top(): get top
+stack.pop(): delete top
+stack.empty(): if empty or not (0 or 1)
+
+- queue: LILO (First In First Out)
+queue.push(?): add
+queue.front(): get front
+queue.pop(): delete front
+queue.empty(): if empty or not (0 or 1)
+
+
+* virtual function : it's about inheritance
+virtual method -> run method of subclass
+(ex)
+- superclass.h
+class CBird {
+    public:
+        virtual void sing() {cout << "bird sings" << endl;}
+        void fly() {cout << "bird flies" << endl;}
+};
+- main.cpp
+CBird* b1, *b2;
+b1 = new CCrow();
+b2 = new CChicken();
+b1->sing(); -> caw caw
+b1->fly();  -> bird flies (super class method)
+b2->sing(); -> cock-a-doodle
+b2->fly();  -> bird flies (super class method)
+
+
+* abstract class: a class having at least one pure virtual function.
+                  we cannot create an instance of abstract class by calliing its constructor.
+** pure virtual function : Assume that this function will be implemented in a subclass.
+(ex)
+virtual void sing()=0;
+
+* virtual destructor
+As stated above, destructor for superclass should be virtual.
+If not virtual, the subclass destructor will not be run, so that it may miss important operation like freeing up memories.
+If denote virtual, superclass destructor is called after subclass destructor is called. 
+
+
+* interface: a class with only pure virtual functions.
+             enables to restrict operations.
+(ex)
+class IInf1 {
+    public:
+        virtual void func1() = 0;
+        virtual void func2() = 0;
+};
+class IInf2 {
+    public:
+        virtual void func3() = 0;
+        virtual void func4() = 0;
+};
+class CSample : public IInf1, public IInf2 {
+    public:
+        void func1() {cout << "func1" << endl;}
+        void func2() {cout << "func2" << endl;}
+        void func3() {cout << "func3" << endl;}
+        void func4() {cout << "func4" << endl;}
+};
+- main.cpp
+int main() {
+    CSample* s = new CSample();
+    foo((IInf1*)s);
+    bar((IInf2*)s);
+    return 0;
+}
+void foo(IInf1* p) {
+    p->func1();
+    p->func2();
+    // p->func3();
+    // p->func4();
+}
+void bar(IInf2* p) {
+    // p->func1();
+    // p->func2();
+    p->func3();
+    p->func4();
+}
+
+
+* operator overload
+return_datatype operator?(arguments) {}
+-> ? indicates a operator like +, -, +=, etc.
+(ex)
+- +, -, * (define not as a member function because it return new instance)
+Vector2 operator+(const Vector2& v1, const Vector2& v2) {}
+
+- =, +=, -= (define as a member function because it return itself)
+Vector2& Vector2::operator=(const Vector2& v) { return *this }
+-> it's important return *this
